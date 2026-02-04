@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: knowledge-platform
+  profiles:
+    active: dev  # 激活 dev 环境
+  security:
+    basic:
+      enabled: false
+
+server:
+  port: 8888  # 后端服务端口
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    com.knowledgeplatform: debug
+    org.springframework.security: debug

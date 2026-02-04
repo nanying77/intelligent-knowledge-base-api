@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bujian.aipersnonknowledge.mapper.KnowledgeBasesMapper">
+    <select id="searchKnowledgeBasesByUserId" resultType="com.bujian.aipersnonknowledge.entity.KnowledgeBases">
+        SELECT DISTINCT kb.*
+        FROM knowledge_bases kb
+                 LEFT JOIN document d ON kb.id = base_id
+        WHERE kb.user_id = #{userId}
+          AND (
+            kb.name LIKE CONCAT('%', #{keyword}, '%')
+                OR d.title LIKE CONCAT('%', #{keyword}, '%')
+            )
+        ORDER BY kb.create_time DESC
+    </select>
+</mapper>

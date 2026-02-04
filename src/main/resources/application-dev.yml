@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost:3306/ai_persnon_knowledge?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false"
+    username: app_nanying
+    password: NY112077
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ${redis.password}
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 20
+          max-wait: -1ms
+          max-idle: 10
+          min-idle: 0
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    cache-enabled: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      insert-strategy: not_null
+      update-strategy: not_null
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.bujian.aipersnonknowledge.entity
+
+jwt:
+  secret: knowledgePlatformSecretKey2024
+  expiration: 86400000
+
+
+logging:
+  level:
+    com.bujian.aipersnonknowledge: debug
+    org.springframework.security: info
