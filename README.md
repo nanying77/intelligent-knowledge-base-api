@@ -1,4 +1,4 @@
-# 智能个人知识库管理系统
+# 智能个人知识库与内容管理平台
 
 <p align="center">
   <img src="https://img.shields.io/badge/Spring%20Boot-3.2.6-brightgreen" alt="Spring Boot Version">

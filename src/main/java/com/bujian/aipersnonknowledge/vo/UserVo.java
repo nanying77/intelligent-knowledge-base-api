@@ -27,4 +27,6 @@ public class UserVo {
     private String avatar;
 
     private LocalDateTime createTime;
+
+    private Integer role;
 }

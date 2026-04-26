@@ -4,11 +4,19 @@ spring:
     url: "jdbc:mysql://localhost:3306/ai_persnon_knowledge?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false"
     username: app_nanying
     password: NY112077
+    # HikariCP 连接池配置
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      pool-name: KnowledgeHikariCP
   data:
     redis:
       host: localhost
       port: 6379
-      password: ${redis.password}
+      password:
       database: 0
       timeout: 3000ms
       lettuce:
@@ -23,6 +31,21 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     default-property-inclusion: non_null
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: 'yuhuadebug@163.com'
+    password: 'TAa5Kr9FiMTBH97r'
+    ssl-enable: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+        connectiontimeout: 5000
+        timeout: 10000
+        writetimeout: 10000
 
 mybatis-plus:
   configuration:
@@ -40,6 +63,52 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   type-aliases-package: com.bujian.aipersnonknowledge.entity
 
+qhkj-config:
+  sms:
+    # 阿里短信 可选非必须
+    aliyun:
+      # Access Key
+      access-key-id: 'LTAI5tAXbFMyyzFFq9bhZAuT'
+      # Access Key Secret
+      access-key-secret: 'BJJ8qmRKbgLKvTjwIIE2C6DL4yaVrY'
+      # 短信签名
+      signature: '知脉'
+      # 模板编码 - 需要在阿里云控制台创建模板后填写
+      # 示例：SMS_154950305 或 SMS_287650000 等
+      template-code: 'SMS_332720272'
+      # 模板变量名称 - 对应模板中的变量名，通常是 code 或 param1
+      template-param-key: 'code'
+
+      ######以非必须不用改#######
+      #  地域信息默认为 cn-beijing
+      region-id: 'cn-beijing'
+      # 接口版本号默认为 2017-05-25
+      version: '2017-05-25'
+      # 请求地址默认为 dysmsapi.aliyuncs.com
+      request-url: 'dysmsapi.aliyuncs.com'
+    # 腾讯云短信 可选非必须
+    tencent:
+      # 密钥 ID
+      secret-id: ''
+      # 密钥 Key
+      secret-key: ''
+      # 短信 SdkAppId
+      sdk-app-id: ''
+      # 短信签名内容
+      sign-name: ''
+      # 模板 ID
+      template-id: ''
+
+      ######以非必须不用改#######
+      # 地域信息默认为 ap-beijing
+      region: 'ap-beijing'
+      # 请求超时时间 默认 60
+      conn-timeout: 60
+      # 请求地址默认为 sms.tencentcloudapi.com
+      request-url: 'sms.tencentcloudapi.com'
+      # 接口版本号默认为 2021-01-11
+      version: '2021-01-11'
+
 jwt:
   secret: knowledgePlatformSecretKey2024
   expiration: 86400000
@@ -49,3 +118,26 @@ logging:
   level:
     com.bujian.aipersnonknowledge: debug
     org.springframework.security: info
+
+info:
+  test: "hello"
+  simple: "test"
+  app:
+    name: "智能知识库"
+    description: "AI Person Knowledge Base API"
+    version: "1.0.0"
+  author: "Your Name"
+  contact: "your.email@example.com"
+  spring-boot-version: "2.7.x"
+  java:
+    version: "17"
+management:
+  endpoint:
+    info:
+      enabled: true
+      cache:
+        time-to-live: 0ms
+  endpoints:
+    web:
+      exposure:
+        include: "*"

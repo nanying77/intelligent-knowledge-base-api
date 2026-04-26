@@ -1,4 +1,4 @@
-package com.bujian.aipersnonknowledge.util;
+package com.bujian.aipersnonknowledge.utils;
 
 import com.bujian.aipersnonknowledge.exception.BusinessException;
 import io.jsonwebtoken.Jwts;

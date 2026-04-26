@@ -12,6 +12,13 @@
         <relativePath/>
     </parent>
 
+<!--    <parent>-->
+<!--        <groupId>com.qhkj</groupId>-->
+<!--        <artifactId>qhkj-boot-starter-parent</artifactId>-->
+<!--        <version>1.0.1-SNAPSHOT</version>-->
+<!--        <relativePath/>-->
+<!--    </parent>-->
+
     <groupId>com.knowledgeplatform</groupId>
     <artifactId>knowledge-platform-backend</artifactId>
     <version>1.0.0</version>
@@ -152,6 +159,24 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- Mail -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- 系统监控 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Micrometer 核心 -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
     </dependencies>
 

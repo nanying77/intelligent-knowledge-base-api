@@ -6,7 +6,6 @@ import com.bujian.aipersnonknowledge.service.CategoryService;
 import com.bujian.aipersnonknowledge.vo.CategoryVo;
 import com.bujian.aipersnonknowledge.vo.Result;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/base/categories")
-@Tag(name = "分类管理")
 @RequiredArgsConstructor
 public class CategoryController {
     @Autowired
@@ -33,7 +31,7 @@ public class CategoryController {
 
     // 获取当前用户的所有分类
     @GetMapping("/list")
-    @Operation(summary = "根据用户ID获取对应分类")
+   @Operation(summary= "根据用户ID获取对应分类")
     public Result<List<CategoryVo>> getUserCategories(@RequestParam int userId) {
 //        String redisKey = "user_categories:" + userId;
 //        List<CategoryVo> cachedResult = (List<CategoryVo>) redisTemplate.opsForValue().get(redisKey);
@@ -80,7 +78,7 @@ public class CategoryController {
 
     // 创建分类
     @PostMapping("/create")
-    @Operation(summary = "创建分类")
+   @Operation(summary= "创建分类")
     public Result<Category> createCategory(@RequestBody CategoryVo categoryVO) {
         try {
             // 检查分类名称是否重复
@@ -124,7 +122,7 @@ public class CategoryController {
 
     // 删除分类
     @DeleteMapping("/delete")
-    @Operation(summary = "删除分类", description = "根据分类Id删除分类")
+   @Operation(summary= "删除分类")
     public Result<Void> deleteCategory(@RequestParam int id) {
         try {
             Category category = categoryService.getById(id);

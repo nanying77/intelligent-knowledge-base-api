@@ -20,7 +20,7 @@ public class Document {
      * 文档ID - 主键，自动递增
      */
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     /**
      * 文档标题
@@ -142,10 +142,10 @@ public class Document {
     private Integer likeCount;
 
     /**
-     * 收藏次数 - 文档被收藏的次数
+     * 是否收藏
      */
-    @TableField("favorite_count")
-    private Integer favoriteCount;
+    @TableField("is_favorite")
+    private Boolean isFavorite;
 
     /**
      * 评论次数 - 文档被评论的次数
@@ -187,5 +187,5 @@ public class Document {
      * 知识库Id
      */
     @TableField(value="base_id")
-    private Integer baseId;
+    private String baseId;
 }

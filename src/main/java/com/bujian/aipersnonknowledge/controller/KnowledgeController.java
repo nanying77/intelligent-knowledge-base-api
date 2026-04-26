@@ -8,8 +8,8 @@ import com.bujian.aipersnonknowledge.service.DocumentService;
 import com.bujian.aipersnonknowledge.service.KnowledgeService;
 import com.bujian.aipersnonknowledge.service.UserService;
 import com.bujian.aipersnonknowledge.vo.Result;
+import com.bujian.aipersnonknowledge.vo.SearchKnowledgeResultVO;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * 知识库控制器
  */
-@Tag(name = "知识库管理")
 public class KnowledgeController {
 
     private final RedisTemplate redisTemplate;
@@ -35,19 +34,22 @@ public class KnowledgeController {
     private final UserService userService;
     private final DocumentService documentService;
 
-    @Operation(summary = "知识库列表")
+   @Operation(summary= "知识库列表")
     /**
      * 获取知识库列表
      */
     @GetMapping("/list")
-    public Result<List<KnowledgeBases>> list(@RequestParam  int userId) {
+    public Result<List<KnowledgeBases>> list(@RequestParam int userId) {
         try {
             String redisKey = "user_knowledge:" + userId;
 
             LambdaQueryWrapper<KnowledgeBases> knowledgeBasesLambdaQueryWrapper = new LambdaQueryWrapper<>();
             knowledgeBasesLambdaQueryWrapper.eq(KnowledgeBases::getUserId, userId);
             List<KnowledgeBases> klist = knowledgeService.list(knowledgeBasesLambdaQueryWrapper);
-
+            klist.forEach(knowledge -> {
+                Long count = documentService.getCount(knowledge.getId());
+                knowledge.setDocumentCount(count);
+            });
             klist.sort(Comparator.comparing(KnowledgeBases::getId));
 
             redisTemplate.opsForValue().set(redisKey, klist, Duration.ofHours(2));
@@ -63,7 +65,7 @@ public class KnowledgeController {
      * 创建知识库
      */
     @PostMapping("/create")
-    @Operation(summary = "创建知识库")
+   @Operation(summary= "创建知识库")
     public Result<KnowledgeBases> create(@RequestBody KnowledgeBases knowledge) {
         try {
             // 检查知识库名称是否重复
@@ -114,33 +116,25 @@ public class KnowledgeController {
             return Result.error("删除失败，系统异常");
         }
     }
-//    /**
-//     * 知识库详情
-//     */
-//    @Operation(summary = "知识库详情")
-//    @GetMapping("/detail")
-//    public Result<KnowledgeBases> detail(@RequestParam int baseId) {
-//
-//    }
 
     /**
      * 搜索知识库,文档
      */
-    @Operation(summary = "搜索知识库或文档")
+   @Operation(summary= "搜索知识库或文档内容")
     @GetMapping("search")
-    public Result searchKnowledgeBases(@RequestParam Integer userId,
+    public Result<List<SearchKnowledgeResultVO>> searchKnowledgeBases(@RequestParam Integer userId,
                                        @RequestParam String keyword) {
         try {
-            List<KnowledgeBases> knowledgeBases = knowledgeService
+            List<SearchKnowledgeResultVO> searchResults = knowledgeService
                     .searchKnowledgeBasesByUserId(userId, keyword);
-            return Result.success(knowledgeBases);
+            return Result.success(searchResults);
         } catch (Exception e) {
             log.error("搜索知识库失败, 用户ID: {}, 关键词: {}", userId, keyword, e);
             return Result.error("搜索失败");
         }
     }
 
-    @Operation(summary = "获取知识库文档树")
+   @Operation(summary= "获取知识库文档树")
     @GetMapping("/document/tree")
     public Result<KnowledgeBases> documentTree(@RequestParam String baseId) {
         KnowledgeBases knowledgeBase = knowledgeService.getById(baseId);
@@ -149,7 +143,7 @@ public class KnowledgeController {
         }
         List<Document> documents = documentService.getDocumentTreeByKnowledgeBaseId(baseId);
         knowledgeBase.setDocuments(documents);
+
         return Result.success(knowledgeBase);
     }
-
 }

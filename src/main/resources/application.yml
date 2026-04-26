@@ -16,3 +16,19 @@ logging:
   level:
     com.knowledgeplatform: debug
     org.springframework.security: debug
+
+# 系统监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env,threaddump,heapdump
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+      enabled: true
+    tags:
+      application: ${spring.application.name}

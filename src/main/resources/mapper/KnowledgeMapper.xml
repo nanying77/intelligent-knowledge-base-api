@@ -1,15 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bujian.aipersnonknowledge.mapper.KnowledgeBasesMapper">
-    <select id="searchKnowledgeBasesByUserId" resultType="com.bujian.aipersnonknowledge.entity.KnowledgeBases">
-        SELECT DISTINCT kb.*
+    
+    <!-- 搜索结果映射 - 使用HashMap接收扁平数据 -->
+    <resultMap id="SearchResultFlatMap" type="java.util.HashMap">
+        <result property="kb_id" column="kb_id"/>
+        <result property="kb_user_id" column="kb_user_id"/>
+        <result property="kb_name" column="kb_name"/>
+        <result property="kb_description" column="kb_description"/>
+        <result property="kb_create_at" column="kb_create_at"/>
+        <result property="kb_create_time" column="kb_create_time"/>
+        <result property="document_id" column="document_id"/>
+        <result property="document_title" column="document_title"/>
+        <result property="document_content" column="document_content"/>
+        <result property="document_base_id" column="document_base_id"/>
+        <result property="document_create_time" column="document_create_time"/>
+        <result property="matched_field" column="matched_field"/>
+    </resultMap>
+    
+    <select id="searchKnowledgeBasesByUserId" resultMap="SearchResultFlatMap">
+        SELECT
+            kb.id AS kb_id,
+            kb.user_id AS kb_user_id,
+            kb.name AS kb_name,
+            kb.description AS kb_description,
+            kb.create_at AS kb_create_at,
+            kb.create_time AS kb_create_time,
+            d.id AS document_id,
+            d.title AS document_title,
+            d.content AS document_content,
+            d.base_id AS document_base_id,
+            d.create_time AS document_create_time,
+            CASE
+                WHEN kb.name LIKE CONCAT('%', #{keyword}, '%') THEN 'kb_name'
+                WHEN d.title LIKE CONCAT('%', #{keyword}, '%') THEN 'document_title'
+                WHEN d.content LIKE CONCAT('%', #{keyword}, '%') THEN 'document_content'
+                ELSE 'unknown'
+                END AS matched_field
         FROM knowledge_bases kb
-                 LEFT JOIN document d ON kb.id = base_id
+                 LEFT JOIN document d ON kb.id = d.base_id
         WHERE kb.user_id = #{userId}
           AND (
             kb.name LIKE CONCAT('%', #{keyword}, '%')
                 OR d.title LIKE CONCAT('%', #{keyword}, '%')
+                OR d.content LIKE CONCAT('%', #{keyword}, '%')
             )
-        ORDER BY kb.create_time DESC
+        ORDER BY kb.create_time DESC, matched_field ASC;
     </select>
 </mapper>

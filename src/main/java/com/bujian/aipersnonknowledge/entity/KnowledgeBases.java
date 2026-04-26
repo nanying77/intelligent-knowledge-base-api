@@ -68,5 +68,15 @@ public class KnowledgeBases implements Serializable {
     @TableField(exist = false)
     private List<Document> documents;
 
+    /**
+     * 是否收藏
+     */
+    @TableField("is_favorite")
+    private boolean isFavorite;
 
+    /**
+     *
+     */
+    @TableField(exist = false)
+    private Long documentCount;
 }

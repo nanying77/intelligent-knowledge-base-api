@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bujian.aipersnonknowledge.mapper.SmsCodeMapper">
+
+    <resultMap id="resultMap" type="com.bujian.aipersnonknowledge.entity.SmsCode">
+        <result column="id" property="id"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="phone" property="phone"/>
+        <result column="sms_code" property="smsCode"/>
+        <result column="ip" property="ip"/>
+        <result column="expiration_time" property="expirationTime"/>
+    </resultMap>
+    <sql id="selectColumn">
+        a.id,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.phone,
+        a.sms_code,
+        a.ip,
+        a.expiration_time
+    </sql>
+</mapper>

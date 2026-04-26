@@ -6,6 +6,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,6 +17,6 @@ import java.util.List;
 @Mapper
 public interface KnowledgeBasesMapper extends BaseMapper<KnowledgeBases> {
 
-    List<KnowledgeBases> searchKnowledgeBasesByUserId(  @Param("userId") Integer userId,
+    List<Map<String, Object>> searchKnowledgeBasesByUserId(  @Param("userId") Integer userId,
                                                         @Param("keyword") String keyword);
 }

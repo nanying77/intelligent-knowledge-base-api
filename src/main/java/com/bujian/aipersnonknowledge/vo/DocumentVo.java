@@ -130,5 +130,5 @@ public class DocumentVo{
     /**
      * 知识库Id
      */
-    private Integer  baseId;
+    private String  baseId;
 }

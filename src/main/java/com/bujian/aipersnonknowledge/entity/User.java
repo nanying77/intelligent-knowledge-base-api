@@ -27,7 +27,7 @@ public class User implements Serializable {
      * 用户ID
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private String id;
 
     /**
      * 用户名
@@ -75,7 +75,7 @@ public class User implements Serializable {
      * 存储空间限制(默认1GB)
      */
     @TableField("storage_limit")
-    private Integer storageLimit;
+    private Long storageLimit;
 
     /**
      * 最后登录时间
@@ -90,11 +90,17 @@ public class User implements Serializable {
     private Integer loginCount;
 
     /**
-     * 状态(0:禁用,1:启用)
+     * 状态 (0:禁用，1:启用)
      */
     @TableField("status")
     private Integer status;
-
+    
+    /**
+     * 角色 (0:普通用户，1:管理员)
+     */
+    @TableField("role")
+    private Integer role;
+    
     /**
      * 创建时间
      */
