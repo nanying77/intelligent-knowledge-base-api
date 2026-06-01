@@ -33,13 +33,12 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
 
     @Override
     public List<Document> getDocumentTreeByKnowledgeBaseId(String knowledgeBaseId) {
-        Thread Thead = new Thread();
         LambdaQueryWrapper<Document> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Document::getBaseId, knowledgeBaseId)
                 .orderByAsc(Document::getCreateTime);
         List<Document> allDocuments = this.list(queryWrapper);
-        // 构建文档树
-        return buildDocumentTree(allDocuments, "0");
+        // 构建文档树（当前为扁平列表，如需树形结构需添加parent_id字段）
+        return allDocuments;
     }
 
     @Override
@@ -47,13 +46,6 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         return this.count(new LambdaQueryWrapper<Document>().eq(Document::getBaseId, knowledgeBaseId));
     }
 
-    /**
-     * 递归构建文档树
-     */
-    private List<Document> buildDocumentTree(List<Document> documents, String parentId) {
-        return documents.stream()
-                .filter(doc -> Objects.equals(doc.getBaseId(), parentId))
-                .collect(Collectors.toList());
-    }
+
 }
 

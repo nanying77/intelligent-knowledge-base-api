@@ -44,7 +44,11 @@ public class KnowledgeController {
             String redisKey = "user_knowledge:" + userId;
 
             LambdaQueryWrapper<KnowledgeBases> knowledgeBasesLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            knowledgeBasesLambdaQueryWrapper.eq(KnowledgeBases::getUserId, userId);
+            // 如果是管理员，则返回所有知识库
+            Integer role = userService.getById(userId).getRole();
+            if (role != null && role != 1) {
+                knowledgeBasesLambdaQueryWrapper.eq(KnowledgeBases::getUserId, userId);
+            }
             List<KnowledgeBases> klist = knowledgeService.list(knowledgeBasesLambdaQueryWrapper);
             klist.forEach(knowledge -> {
                 Long count = documentService.getCount(knowledge.getId());
@@ -123,16 +127,16 @@ public class KnowledgeController {
    @Operation(summary= "搜索知识库或文档内容")
     @GetMapping("search")
     public Result<List<SearchKnowledgeResultVO>> searchKnowledgeBases(@RequestParam Integer userId,
-                                       @RequestParam String keyword) {
+                                       @RequestParam String keyword)
+   {
         try {
             List<SearchKnowledgeResultVO> searchResults = knowledgeService
                     .searchKnowledgeBasesByUserId(userId, keyword);
             return Result.success(searchResults);
         } catch (Exception e) {
-            log.error("搜索知识库失败, 用户ID: {}, 关键词: {}", userId, keyword, e);
             return Result.error("搜索失败");
         }
-    }
+}
 
    @Operation(summary= "获取知识库文档树")
     @GetMapping("/document/tree")

@@ -94,6 +94,7 @@ public class UserController {
         map.put("token", token);
         map.put("avatar", user.getAvatar());
         map.put("role", user.getRole());
+        map.put("userId", user.getId());
                 
         // 增加在线用户数（基于 Token 去重）
         monitorService.incrementOnlineUsers(token);

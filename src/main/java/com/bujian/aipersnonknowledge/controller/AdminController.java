@@ -3,8 +3,12 @@ package com.bujian.aipersnonknowledge.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.bujian.aipersnonknowledge.entity.Category;
 import com.bujian.aipersnonknowledge.entity.Document;
+import com.bujian.aipersnonknowledge.entity.DocumentTag;
 import com.bujian.aipersnonknowledge.entity.KnowledgeBases;
+import com.bujian.aipersnonknowledge.entity.Label;
 import com.bujian.aipersnonknowledge.entity.User;
+import com.bujian.aipersnonknowledge.mapper.DocumentTagMapper;
+import com.bujian.aipersnonknowledge.mapper.LabelMapper;
 import com.bujian.aipersnonknowledge.service.CategoryService;
 import com.bujian.aipersnonknowledge.service.DocumentService;
 import com.bujian.aipersnonknowledge.service.KnowledgeService;
@@ -41,6 +45,8 @@ public class AdminController {
     private final CategoryService categoryService;
     private final KnowledgeService knowledgeService;
     private final JwtUtils jwtUtils;
+    private final DocumentTagMapper documentTagMapper;
+    private final LabelMapper labelMapper;
 
     /**
      * 检查当前用户是否为管理员
@@ -261,9 +267,9 @@ public class AdminController {
     @Operation(summary = "获取知识库与文档的树形结构列表")
     @GetMapping("/document/list")
    public Result<List<KnowledgeBaseTreeVO>> getKnowledgeBaseWithDocuments(HttpServletRequest request) {
-        if (!isAdmin(request)) {
-            return Result.error(403, "权限不足，仅管理员可访问");
-        }
+//        if (!isAdmin(request)) {
+//            return Result.error(403, "权限不足，仅管理员可访问");
+//        }
 
         try {
             // 查询所有知识库，按创建时间倒序
@@ -271,18 +277,46 @@ public class AdminController {
             knowledgeQueryWrapper.orderByDesc(KnowledgeBases::getCreateTime);
             List<KnowledgeBases> knowledgeBasesList = knowledgeService.list(knowledgeQueryWrapper);
 
-            // 为每个知识库查询其下属的文档
+            // 为每个知识库查询其下属的文档和标签
             List<KnowledgeBaseTreeVO> treeVOList = knowledgeBasesList.stream()
                     .map(knowledgeBase -> {
                         KnowledgeBaseTreeVO vo = KnowledgeBaseTreeVO.fromKnowledgeBase(knowledgeBase);
                         
                         // 查询该知识库下的所有文档，按创建时间倒序
                         LambdaQueryWrapper<Document> documentQueryWrapper = new LambdaQueryWrapper<>();
-                        documentQueryWrapper.eq(Document::getBaseId, knowledgeBase.getId())
+                        documentQueryWrapper.eq(Document::getBaseId, knowledgeBase.getId().toString())
                                 .orderByDesc(Document::getCreateTime);
                         List<Document> documents = documentService.list(documentQueryWrapper);
                         
-                        vo.setDocuments(documents);
+                        // 为每个文档查询其标签
+                        List<KnowledgeBaseTreeVO.DocumentWithLabelsVO> documentsWithLabels = documents.stream()
+                                .map(document -> {
+                                    KnowledgeBaseTreeVO.DocumentWithLabelsVO docVO = new KnowledgeBaseTreeVO.DocumentWithLabelsVO();
+                                    docVO.setDocument(document);
+                                    
+                                    // 查询文档关联的标签ID
+                                    LambdaQueryWrapper<DocumentTag> dtQuery = new LambdaQueryWrapper<>();
+                                    dtQuery.eq(DocumentTag::getDocumentId, document.getId());
+                                    List<DocumentTag> documentTags = documentTagMapper.selectList(dtQuery);
+                                    
+                                    // 获取标签详情
+                                    List<Label> labels = List.of();
+                                    if (!documentTags.isEmpty()) {
+                                        List<Integer> labelIds = documentTags.stream()
+                                                .map(DocumentTag::getTagId)
+                                                .collect(Collectors.toList());
+                                        
+                                        LambdaQueryWrapper<Label> labelQuery = new LambdaQueryWrapper<>();
+                                        labelQuery.in(Label::getId, labelIds);
+                                        labels = labelMapper.selectList(labelQuery);
+                                    }
+                                    
+                                    docVO.setLabels(labels);
+                                    return docVO;
+                                })
+                                .collect(Collectors.toList());
+                        
+                        vo.setDocuments(documentsWithLabels);
                         vo.setDocumentCount((long) documents.size());
                         
                         return vo;

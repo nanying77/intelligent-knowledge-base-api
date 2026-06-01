@@ -5,6 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -16,6 +18,8 @@ import java.net.UnknownHostException;
  */
 @Slf4j
 @SpringBootApplication
+@EnableAsync      // 启用异步支持，用于用户行为记录等功能
+@EnableScheduling // 启用定时任务，用于批量同步浏览量等
 public class AiPersnonKnowledgeApplication {
     public static void main(String[] args) throws UnknownHostException{
         ConfigurableApplicationContext application = SpringApplication.run(AiPersnonKnowledgeApplication.class, args);

@@ -128,7 +128,12 @@ public class DocumentVo{
     private LocalDateTime updateTime;
 
     /**
-     * 知识库Id
+     * 基础文档ID（用于版本关联）
      */
-    private String  baseId;
+    private String baseId;
+
+    /**
+     * 知识库ID（真正的所属知识库）
+     */
+    private Integer knowledgeBaseId;
 }

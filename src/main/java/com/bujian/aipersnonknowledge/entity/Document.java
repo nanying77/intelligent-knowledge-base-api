@@ -183,9 +183,7 @@ public class Document {
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    /**
-     * 知识库Id
-     */
-    @TableField(value="base_id")
+    @TableField(value = "base_id")
     private String baseId;
 }
+

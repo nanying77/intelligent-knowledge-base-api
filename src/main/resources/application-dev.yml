@@ -113,10 +113,25 @@ jwt:
   secret: knowledgePlatformSecretKey2024
   expiration: 86400000
 
+# 文件存储配置
+file:
+  storage:
+    type: local  # local 或 aliyun
+    local-path: ./uploads
+    max-file-size: 10485760  # 10MB
+    allowed-types: pdf,doc,docx,xls,xlsx,ppt,pptx,txt,md,jpg,jpeg,png,gif,zip,rar
+    # 阿里云OSS配置（如果使用OSS）
+    oss-endpoint: oss-cn-beijing.aliyuncs.com
+    oss-access-key-id: your-access-key-id
+    oss-access-key-secret: your-access-key-secret
+    oss-bucket-name: your-bucket-name
+    oss-domain: https://your-bucket.oss-cn-beijing.aliyuncs.com
+
 
 logging:
   level:
     com.bujian.aipersnonknowledge: debug
+    com.bujian.aipersnonknowledge.service.MonitorService: warn
     org.springframework.security: info
 
 info:
